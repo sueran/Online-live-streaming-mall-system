@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ltd.newbee.mall.dao.MessageMapper">
+    <resultMap id="BaseResultMap" type="ltd.newbee.mall.entity.Message">
+<!--        <id column="admin_user_id" jdbcType="BIGINT" property="adminUserId" />-->
+<!--        <result column="login_user_name" jdbcType="VARCHAR" property="loginUserName" />-->
+<!--        <result column="login_password" jdbcType="VARCHAR" property="loginPassword" />-->
+<!--        <result column="nick_name" jdbcType="VARCHAR" property="nickName" />-->
+<!--        <result column="locked" jdbcType="TINYINT" property="locked" />-->
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+        <result column="shop_id" jdbcType="BIGINT" property="shopId"/>
+        <result column="message" jdbcType="VARCHAR" property="message"/>
+        <result column="time" jdbcType="TIMESTAMP" property="time"/>
+    </resultMap>
+    <sql id="BaseSql">
+        user_id,shop_id,message,time
+    </sql>
+    <select id="getMessageList"  parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="BaseSql"></include> FROM tb_newbee_mall_message  WHERE time in
+            (SELECT MAX(time) FROM tb_newbee_mall_message WHERE user_id= #{id} GROUP BY shop_id)
+    </select>
+
+    <select id="getAdminMessageList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT <include refid="BaseSql"></include> FROM tb_newbee_mall_message  WHERE time in
+        (SELECT MAX(time) FROM tb_newbee_mall_message WHERE shop_id= #{id} GROUP BY user_id)
+    </select>
+</mapper>
